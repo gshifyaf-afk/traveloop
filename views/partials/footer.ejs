@@ -1,0 +1,16 @@
+    </main>
+    <footer>
+        <div class="container">
+            <p>&copy; <%= new Date().getFullYear() %> Traveloop. All rights reserved.</p>
+        </div>
+    </footer>
+    <% if (typeof user !== 'undefined' && user) { %>
+    <script>
+        document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+            const res = await fetch('/api/auth/logout', { method: 'POST' });
+            if (res.ok) window.location.href = '/login';
+        });
+    </script>
+    <% } %>
+</body>
+</html>

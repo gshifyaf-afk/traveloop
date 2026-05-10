@@ -1,0 +1,130 @@
+<%- include('partials/header') %>
+
+<div class="editor-header" style="padding: 2rem 0; margin-bottom: 3rem; display: flex; justify-content: space-between; align-items: flex-end;">
+    <div>
+        <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">Itinerary Designer</h1>
+        <p class="text-dim" style="font-size: 1.1rem;"><i class="fas fa-pen-nib" style="margin-right: 0.5rem;"></i> Designing your journey: <strong><%= trip.name %></strong></p>
+    </div>
+    <div style="display: flex; gap: 1rem;">
+        <a href="/trips/view/<%= trip.id %>" class="btn btn-primary">
+            <i class="fas fa-eye"></i> Preview Journey
+        </a>
+    </div>
+</div>
+
+<div class="builder-layout dashboard-grid">
+    <section class="stops-manager">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem;">
+            <h2 style="font-size: 1.5rem;"><i class="fas fa-map-marker-alt" style="margin-right: 0.75rem; color: var(--primary);"></i> Journey Stops</h2>
+            <button id="addStopBtn" class="btn btn-outline btn-small">
+                <i class="fas fa-plus-circle"></i> Add New Stop
+            </button>
+        </div>
+
+        <div id="stopsList" style="display: flex; flex-direction: column; gap: 2rem;">
+            <!-- Content injected via JS -->
+        </div>
+    </section>
+
+    <aside class="utility-sidebar">
+        <div class="card glass-card" style="margin-bottom: 2.5rem;">
+            <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-check-double" style="margin-right: 0.5rem; color: var(--success);"></i> Packing List</h3>
+            <div id="checklistItems" style="display: flex; flex-direction: column; gap: 0.75rem;"></div>
+            <form id="addChecklistForm" style="margin-top: 2rem; display: flex; gap: 0.5rem;">
+                <input type="text" id="checklistItem" placeholder="Need to pack..." required style="padding: 0.75rem 1rem;">
+                <button type="submit" class="btn btn-primary" style="padding: 0 1.25rem;"><i class="fas fa-plus"></i></button>
+            </form>
+        </div>
+
+        <div class="card glass-card">
+            <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-sticky-note" style="margin-right: 0.5rem; color: var(--accent);"></i> Trip Journal</h3>
+            <div id="notesList" style="max-height: 400px; overflow-y: auto;"></div>
+            <form id="addNoteForm" style="margin-top: 2rem;">
+                <textarea id="noteText" placeholder="Write a note to your future self..." required style="height: 120px; margin-bottom: 1rem;"></textarea>
+                <button type="submit" class="btn btn-outline btn-block"><i class="fas fa-save"></i> Save Journal Entry</button>
+            </form>
+        </div>
+    </aside>
+</div>
+
+<!-- Modals -->
+<div id="stopModal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="card glass-card" style="width: 100%; max-width: 500px; padding: 3rem;">
+        <h2 id="modalTitle" style="margin-bottom: 2rem;">Plan a Destination</h2>
+        <form id="stopForm">
+            <input type="hidden" id="stopId">
+            <div class="form-group">
+                <label>Where are you heading?</label>
+                <input type="text" id="cityName" list="predefinedCities" required placeholder="e.g. Kyoto, Japan">
+                <div style="display: flex; gap: 0.5rem; flex-wrap: wrap; margin-top: 0.75rem;">
+                    <span class="badge suggestion-chip" style="cursor: pointer; font-size: 0.7rem; background: var(--bg-main); border: 1px solid var(--glass-border);" onclick="document.getElementById('cityName').value='Ooty, Tamil Nadu'">Hill Station</span>
+                    <span class="badge suggestion-chip" style="cursor: pointer; font-size: 0.7rem; background: var(--bg-main); border: 1px solid var(--glass-border);" onclick="document.getElementById('cityName').value='Pondicherry, India'">Budget Friendly</span>
+                    <span class="badge suggestion-chip" style="cursor: pointer; font-size: 0.7rem; background: var(--bg-main); border: 1px solid var(--glass-border);" onclick="document.getElementById('cityName').value='Chennai, Tamil Nadu'">Region: TN</span>
+                </div>
+                <datalist id="predefinedCities">
+                    <option value="Paris, France">
+                    <option value="Tokyo, Japan">
+                    <option value="London, UK">
+                    <option value="Rome, Italy">
+                    <option value="Ooty, Tamil Nadu">
+                    <option value="Mysore, Karnataka">
+                </datalist>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Arrival</label>
+                    <input type="date" id="arrivalDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Departure</label>
+                    <input type="date" id="departureDate" required>
+                </div>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary btn-block">Confirm Destination</button>
+                <button type="button" class="btn btn-outline" id="closeModal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div id="activityModal" class="modal" style="display: none; position: fixed; inset: 0; background: rgba(15, 23, 42, 0.8); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center;">
+    <div class="card glass-card" style="width: 100%; max-width: 500px; padding: 3rem;">
+        <h2 style="margin-bottom: 2rem;">Schedule Activity</h2>
+        <form id="activityForm">
+            <input type="hidden" id="activityStopId">
+            <div class="form-group">
+                <label>What's the plan?</label>
+                <input type="text" id="actName" required placeholder="e.g. Sushi at Tsukiji Market">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                <div class="form-group">
+                    <label>Estimated Cost (₹)</label>
+                    <input type="number" id="actCost" step="0.01" value="0">
+                </div>
+                <div class="form-group">
+                    <label>Time</label>
+                    <input type="time" id="actTime">
+                </div>
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="actCategory">
+                    <option value="Travel">Travel</option>
+                    <option value="Hotel">Hotel</option>
+                    <option value="Food">Food</option>
+                    <option value="Activities">Activities</option>
+                    <option value="Shopping">Shopping</option>
+                </select>
+            </div>
+            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                <button type="submit" class="btn btn-primary btn-block">Add to Itinerary</button>
+                <button type="button" class="btn btn-outline" id="closeActModal">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>const tripId = <%= trip.id %>;</script>
+<script src="/js/itinerary_builder.js"></script>
+<%- include('partials/footer') %>

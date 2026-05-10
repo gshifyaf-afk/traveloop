@@ -1,0 +1,52 @@
+<%- include('partials/header') %>
+
+<div style="display: flex; justify-content: center; padding: 4rem 0;">
+    <div class="card glass-card" style="width: 100%; max-width: 600px; padding: 3rem;">
+        <h1 style="margin-bottom: 0.5rem;">Create Your Journey</h1>
+        <p class="text-muted" style="margin-bottom: 2.5rem;">Let's start with the basics of your adventure.</p>
+        
+        <form id="createTripForm">
+            <div class="form-group">
+                <label for="name">Journey Name</label>
+                <input type="text" id="name" name="name" required placeholder="E.g. Summer Euro Trip 2024">
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="start_date">Start Date</label>
+                    <input type="date" id="start_date" name="start_date" required>
+                </div>
+                <div class="form-group">
+                    <label for="end_date">End Date</label>
+                    <input type="date" id="end_date" name="end_date" required>
+                </div>
+            </div>
+            
+            <div class="form-group">
+                <label for="description">Trip Description (Optional)</label>
+                <textarea id="description" name="description" rows="4" placeholder="What are you excited about?"></textarea>
+            </div>
+            
+            <div style="display: flex; gap: 1rem; margin-top: 1rem;">
+                <button type="submit" class="btn btn-primary btn-block">Create Journey</button>
+                <a href="/dashboard" class="btn btn-outline">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    document.getElementById('createTripForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const data = Object.fromEntries(new FormData(e.target));
+        const res = await fetch('/api/trips', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        const result = await res.json();
+        if (result.id) window.location.href = `/trips/itinerary/${result.id}`;
+        else alert('Failed to create trip');
+    });
+</script>
+<%- include('partials/footer') %>

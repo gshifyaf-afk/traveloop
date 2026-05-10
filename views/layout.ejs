@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Traveloop - Plan Your Journey</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <a href="/">Traveloop</a>
+            </div>
+            <ul class="nav-links">
+                <% if (typeof user !== 'undefined' && user) { %>
+                    <li><a href="/dashboard">Dashboard</a></li>
+                    <li><a href="/my-trips">My Trips</a></li>
+                    <li><a href="/trips/create">New Trip</a></li>
+                    <li><span class="user-name">Hi, <%= user.name %></span></li>
+                    <li><button id="logoutBtn" class="btn btn-outline">Logout</button></li>
+                <% } else { %>
+                    <li><a href="/login">Login</a></li>
+                    <li><a href="/signup" class="btn btn-primary">Sign Up</a></li>
+                <% } %>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container">
+        <%- body %>
+    </main>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Traveloop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/js/utils.js"></script>
+    <% if (typeof user !== 'undefined' && user) { %>
+    <script>
+        document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+            const res = await fetch('/api/auth/logout', { method: 'POST' });
+            if (res.ok) window.location.href = '/login';
+        });
+    </script>
+    <% } %>
+</body>
+</html>

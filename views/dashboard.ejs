@@ -1,0 +1,74 @@
+<%- include('partials/header') %>
+
+<div class="dashboard-hero">
+    <div class="stats-card glass-card">
+        <div>
+            <h1 style="color: white; font-size: 2.5rem;">Hello, <%= user.name %>!</h1>
+            <p style="opacity: 0.9; font-size: 1.1rem;">You have <%= tripsCount %> active journeys planned.</p>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.5rem;">TOTAL BUDGET INVESTED</div>
+            <div style="font-size: 2.2rem; font-weight: 800;">₹<%= totalBudget.toLocaleString() %></div>
+        </div>
+    </div>
+</div>
+
+<div class="dashboard-grid">
+    <section class="main-content">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+            <h2>Recent Journeys</h2>
+            <div style="position: relative; width: 300px;">
+                <i class="fas fa-search" style="position: absolute; left: 1.25rem; top: 50%; transform: translateY(-50%); color: var(--text-dim);"></i>
+                <input type="text" id="tripSearch" placeholder="Find a trip..." style="padding-left: 3rem; background: white; border-radius: var(--radius-pill); border: 1px solid var(--glass-border);">
+            </div>
+        </div>
+
+        <div class="grid-cols-auto" id="tripsList">
+            <!-- Add Trip Card -->
+            <div class="card glass-card" style="border: 2px dashed var(--text-dim); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1rem; min-height: 250px; cursor: pointer; background: transparent;" onclick="window.location.href='/trips/create'">
+                <div style="width: 60px; height: 60px; border-radius: 50%; background: var(--primary-glow); display: flex; align-items: center; justify-content: center; color: var(--primary); font-size: 1.5rem;">
+                    <i class="fas fa-plus"></i>
+                </div>
+                <h3 style="color: var(--text-dim);">Start a new journey</h3>
+            </div>
+            
+            <!-- Trip cards would be injected here or handled by separate partial/logic -->
+        </div>
+    </section>
+
+    <aside class="sidebar">
+        <div class="card glass-card">
+            <h3 style="margin-bottom: 1.5rem;"><i class="fas fa-chart-pie" style="margin-right: 0.5rem; color: var(--primary);"></i> Overview</h3>
+            <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #e0f2fe; display: flex; align-items: center; justify-content: center; color: #0ea5e9;">
+                        <i class="fas fa-suitcase-rolling"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase;">Total Trips</div>
+                        <div style="font-size: 1.1rem; font-weight: 700;"><%= tripsCount %></div>
+                    </div>
+                </div>
+                <div style="display: flex; align-items: center; gap: 1rem;">
+                    <div style="width: 40px; height: 40px; border-radius: 10px; background: #fef3c7; display: flex; align-items: center; justify-content: center; color: #d97706;">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <div>
+                        <div style="font-size: 0.75rem; color: var(--text-dim); font-weight: 700; text-transform: uppercase;">Avg. Trip Cost</div>
+                        <div style="font-size: 1.1rem; font-weight: 700;">₹<%= (totalBudget / (tripsCount || 1)).toLocaleString() %></div>
+                    </div>
+                </div>
+            </div>
+            
+            <hr style="margin: 2rem 0; border: 0; border-top: 1px solid var(--glass-border);">
+            
+            <a href="/my-trips" class="btn btn-outline btn-block" style="justify-content: center;">View All Trips</a>
+        </div>
+    </aside>
+</div>
+
+<script>
+    // Integration logic for dynamic trip list could be added here
+</script>
+
+<%- include('partials/footer') %>
